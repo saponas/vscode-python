@@ -48,7 +48,12 @@ export class TerminalService implements ITerminalService, Disposable {
     public async sendText(text: string): Promise<void> {
         await this.ensureTerminal();
         this.terminal!.show(true);
-        this.terminal!.sendText(text);
+        await this.terminal!.sendText(text);
+        // send carriage return to make code execute
+        await new Promise(resolve => setTimeout(resolve, 100));
+        await this.terminal.sendText('\u000D', false);
+        await new Promise(resolve => setTimeout(resolve, 100));
+        await this.terminal.sendText('\u000D', false);
     }
     public async show(preserveFocus: boolean = true): Promise<void> {
         await this.ensureTerminal(preserveFocus);
